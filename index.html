@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel de Estudos — Câmara dos Deputados 2026 | Arquivologia</title>
+<style>
+:root{color-scheme:light dark;--bg:#f4f6f8;--panel:#fff;--text:#18212f;--muted:#687386;--line:#e1e6ed;--green:#16834a;--blue:#2459a6;--amber:#a86b12;--shadow:0 4px 18px #1720330d}
+@media(prefers-color-scheme:dark){:root{--bg:#10151d;--panel:#1a222e;--text:#edf2f8;--muted:#a5b0c0;--line:#303b4a;--green:#55c987;--blue:#82b1ff;--amber:#e9b45c;--shadow:none}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:linear-gradient(120deg,#142b46,#205b65);color:white;padding:28px 18px}
+.wrap{max-width:1050px;margin:auto;padding:0 16px}header .wrap{padding-top:0;padding-bottom:0}
+.eyebrow{font-size:12px;letter-spacing:.12em;font-weight:800;opacity:.8}h1{font-size:clamp(25px,5vw,38px);line-height:1.15;margin:9px 0}header p{margin:8px 0 0;color:#e0edf1}
+main{padding:22px 0 50px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:15px}.stat,.panel,.subject{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.stat{padding:14px}.stat strong{display:block;font-size:27px}.stat span{font-size:12px;color:var(--muted)}
+.panel{padding:16px;margin-bottom:15px}.progressline{height:10px;border-radius:20px;background:var(--line);overflow:hidden;margin:9px 0}.progressline>div{height:100%;background:var(--green);width:0;transition:width .2s}
+.controls{display:flex;flex-wrap:wrap;gap:9px;align-items:center}.controls label{font-size:13px;color:var(--muted)}
+select,input[type=search],button{font:inherit;border:1px solid var(--line);border-radius:9px;padding:9px 11px;background:var(--panel);color:var(--text)}
+button{cursor:pointer}button:hover{border-color:var(--blue)}button.primary{background:var(--blue);color:white;border-color:var(--blue)}button.danger{color:#b44343}
+.subject{margin:12px 0;overflow:hidden}.subject-head{padding:15px;display:flex;gap:12px;align-items:center;cursor:pointer}.subject-head:hover{background:color-mix(in srgb,var(--blue) 5%,transparent)}
+.subject-title{font-weight:750;flex:1}.meta{font-size:12px;color:var(--muted)}.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:5px}
+.chip{font-size:11px;padding:3px 8px;border-radius:30px;background:var(--line);color:var(--muted)}.chip.basic{color:var(--blue)}.chip.high{color:var(--green)}.chip.med{color:var(--amber)}
+.mini{height:5px;background:var(--line);border-radius:10px;margin:0 15px 13px;overflow:hidden}.mini div{height:100%;background:var(--green)}
+.topics{border-top:1px solid var(--line);padding:7px 15px 14px}.topic{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 65%,transparent)}.topic:last-child{border:0}
+.topic input{width:18px;height:18px;accent-color:var(--green);margin:2px 0 0}.topic-name{flex:1;font-size:14px}.topic.done .topic-name{text-decoration:line-through;color:var(--muted)}
+.priority{font-size:10px;white-space:nowrap;border-radius:20px;padding:3px 7px;background:var(--line);color:var(--muted)}.priority.muito{color:var(--green)}.priority.alta{color:var(--amber)}
+.hidden{display:none!important}.footer{color:var(--muted);font-size:12px;margin-top:18px}.empty{padding:20px;color:var(--muted);text-align:center}
+@media(max-width:560px){.stats{gap:7px}.stat{padding:10px}.stat strong{font-size:23px}.subject-head{padding:12px}.priority{font-size:9px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="eyebrow">PAINEL DE ESTUDOS · CEBRASPE</div><h1>Câmara dos Deputados 2026</h1><p>Analista Legislativo · Documentação e Informação Legislativa · Arquivologia</p></div></header>
+<main class="wrap">
+<section class="stats">
+ <div class="stat"><strong id="pct">0%</strong><span>Concluído</span></div>
+ <div class="stat"><strong id="count">0</strong><span>Assuntos estudados</span></div>
+ <div class="stat"><strong id="remaining">0</strong><span>Assuntos pendentes</span></div>
+</section>
+<section class="panel">
+ <strong>Progresso geral</strong><div class="progressline"><div id="bar"></div></div>
+ <div class="meta" id="summary">0 de 0 assuntos</div>
+</section>
+<section class="panel controls">
+ <label>Grupo <select id="group"><option value="all">Todas as matérias</option><option value="BÁSICOS">Conhecimentos básicos</option><option value="ESPECÍFICOS">Conhecimentos específicos</option></select></label>
+ <label>Status <select id="status"><option value="all">Todos</option><option value="pending">Pendentes</option><option value="done">Concluídos</option></select></label>
+ <label>Prioridade <select id="priority"><option value="all">Todas</option><option value="Muito alta">Muito alta</option><option value="Alta">Alta</option><option value="Média">Média</option></select></label>
+ <input id="search" type="search" placeholder="Buscar assunto ou matéria…" aria-label="Buscar">
+ <button id="expand">Recolher todas</button>
+</section>
+<div id="subjects"></div>
+<section class="panel controls">
+ <button class="primary" id="export">Exportar meu progresso</button>
+ <button id="import">Importar progresso</button>
+ <input id="file" type="file" accept="application/json" class="hidden">
+ <button class="danger" id="reset">Zerar marcações</button>
+</section>
+<p class="footer">As marcações são salvas automaticamente neste navegador, neste dispositivo. Use “Exportar meu progresso” para guardar uma cópia ou transferir suas marcações. As prioridades são orientações estratégicas, não pesos ou incidências oficiais. Confira sempre o edital e suas retificações.</p>
+</main>
+<script>
+const subjects = [{"group": "BÁSICOS", "name": "Língua Portuguesa", "priority": "Muito alta", "topics": [["Interpretação e compreensão de textos", "Muito alta"], ["Tipologia e gêneros textuais", "Alta"], ["Coesão e coerência textual", "Muito alta"], ["Referência, substituição e conectivos", "Alta"], ["Classes de palavras e estrutura sintática", "Alta"], ["Coordenação e subordinação", "Alta"], ["Pontuação", "Muito alta"], ["Concordância verbal e nominal", "Muito alta"], ["Regência e crase", "Muito alta"], ["Colocação pronominal", "Alta"], ["Reescrita e equivalência de sentido", "Muito alta"], ["Semântica e significação das palavras", "Alta"]]}, {"group": "BÁSICOS", "name": "Língua Inglesa", "priority": "Alta", "topics": [["Interpretação de textos (reading comprehension)", "Muito alta"], ["Ideias principais e secundárias", "Muito alta"], ["Informações explícitas e implícitas", "Muito alta"], ["Vocabulário e expressões contextuais", "Alta"], ["Referência e relações entre partes do texto", "Alta"], ["Gramática aplicada à compreensão", "Alta"], ["Tempos verbais e estruturas linguísticas", "Média"]]}, {"group": "BÁSICOS", "name": "Direito Administrativo e Administração Pública", "priority": "Muito alta", "topics": [["Princípios expressos e implícitos da Administração Pública", "Muito alta"], ["Organização administrativa: direta e indireta", "Muito alta"], ["Centralização, descentralização, concentração e desconcentração", "Muito alta"], ["Atos administrativos: elementos, atributos e espécies", "Muito alta"], ["Anulação, revogação, extinção e convalidação dos atos", "Muito alta"], ["Agentes públicos: cargos, empregos e funções", "Muito alta"], ["Lei 8.112/1990: provimento, vacância, direitos e deveres", "Muito alta"], ["Regime disciplinar, penalidades e processo administrativo disciplinar", "Muito alta"], ["Lei 9.784/1999: processo administrativo federal", "Alta"], ["Poderes administrativos e abuso de poder", "Muito alta"], ["Responsabilidade civil do Estado: ação e omissão", "Muito alta"], ["Improbidade administrativa – Lei 8.429/1992 atualizada", "Alta"], ["Patrimonialismo, burocracia e Nova Gestão Pública", "Alta"], ["Nova Governança Pública, redes e coprodução", "Alta"], ["Governança, governabilidade e valor público", "Alta"], ["Decreto 9.203/2017: liderança, estratégia e controle", "Alta"], ["Lei 14.133/2021: princípios, modalidades e fases", "Muito alta"], ["Dispensa e inexigibilidade de licitação", "Muito alta"], ["Contratos, gestão e fiscalização contratual", "Muito alta"], ["Estudo Técnico Preliminar e Termo de Referência", "Alta"], ["Lei de Acesso à Informação – Lei 12.527/2011", "Muito alta"], ["LGPD – Lei 13.709/2018 e tratamento pelo poder público", "Muito alta"], ["Parecer administrativo e responsabilidade do parecerista", "Média"]]}, {"group": "BÁSICOS", "name": "Direito Constitucional e Regimento Interno", "priority": "Muito alta", "topics": [["Constituição Federal: conceito, estrutura e características", "Alta"], ["Princípios fundamentais da Constituição", "Muito alta"], ["Direitos e deveres individuais e coletivos", "Muito alta"], ["Direitos sociais, nacionalidade e direitos políticos", "Alta"], ["Organização político-administrativa do Estado", "Alta"], ["Intervenção federal", "Média"], ["Administração Pública e servidores públicos na Constituição", "Muito alta"], ["Congresso Nacional, Câmara e Senado: competências", "Muito alta"], ["Regime constitucional dos parlamentares", "Alta"], ["Regimento Interno da Câmara: disposições preliminares e órgãos (arts. 1º a 24)", "Muito alta"], ["Sessões da Câmara (arts. 65 a 94)", "Muito alta"], ["Deputados (arts. 226 a 251)", "Alta"], ["Administração e economia interna (arts. 262 a 273)", "Alta"], ["Regimento Comum do Congresso Nacional: Título I e Título IV, capítulos II e III", "Alta"]]}, {"group": "BÁSICOS", "name": "Tecnologia da Informação e Dados", "priority": "Alta", "topics": [["Microsoft 365: Word, Excel, PowerPoint e OneDrive", "Muito alta"], ["Redes de computadores, Internet e intranet", "Alta"], ["Correio eletrônico, Teams e Google Meet", "Alta"], ["Segurança da informação e governança digital", "Muito alta"], ["Backup, vírus, worms e pragas virtuais", "Alta"], ["Antivírus, firewall, antispyware e ameaças digitais", "Muito alta"], ["Phishing e pharming", "Muito alta"], ["Inteligência artificial: conceitos e aplicações", "Muito alta"], ["Engenharia de prompts e IA generativa", "Muito alta"], ["Aprendizado supervisionado, não supervisionado e por reforço", "Alta"], ["Ética e responsabilidade digital no serviço público", "Alta"], ["Dados: conceitos, atributos, métricas e transformação", "Alta"], ["Visualização de dados: gráficos e ferramentas", "Alta"], ["Power BI, Tableau, Data Studio e storytelling", "Alta"]]}, {"group": "ESPECÍFICOS", "name": "Ciência da Informação – Gestão, Governança e Ética", "priority": "Muito alta", "topics": [["Dado, informação, documento e conhecimento: conceitos e relações", "Muito alta"], ["Ciclo de vida da informação", "Muito alta"], ["Organização, representação, recuperação e uso da informação", "Alta"], ["Informação estruturada, semiestruturada e não estruturada", "Alta"], ["Comportamento e necessidades informacionais", "Alta"], ["Gestão da informação e memória institucional", "Muito alta"], ["Qualidade, confiabilidade, autenticidade e integridade da informação", "Muito alta"], ["Governança da informação e governança de dados", "Muito alta"], ["Papéis, políticas e responsabilidades: data ownership e stewardship", "Alta"], ["Ciclo de vida, qualidade, proveniência e linhagem dos dados", "Alta"], ["Catálogos de dados, inventários e dados abertos governamentais", "Alta"], ["Metadados: tipos, funções e aplicações", "Muito alta"], ["Vocabulários controlados, tesauros, taxonomias e ontologias", "Alta"], ["Interoperabilidade e organização do conhecimento", "Alta"], ["Transparência, sigilo e ética informacional", "Muito alta"]]}, {"group": "ESPECÍFICOS", "name": "Sistemas Informacionais, Ciência de Dados e Proteção da Informação", "priority": "Muito alta", "topics": [["Sistemas de informação: conceitos, componentes e arquitetura", "Muito alta"], ["Ciclo de vida e gestão de sistemas informacionais", "Alta"], ["Sistemas de busca, indexação e descoberta", "Muito alta"], ["Usabilidade, experiência do usuário e acessibilidade digital", "Alta"], ["Fundamentos de Ciência de Dados", "Muito alta"], ["Preparação, limpeza e transformação de dados", "Muito alta"], ["Dados estruturados e não estruturados", "Alta"], ["Análise exploratória e estatística descritiva", "Alta"], ["Indicadores, métricas e qualidade de dados", "Alta"], ["Segurança e proteção da informação", "Muito alta"], ["Privacidade, controle de acesso e gestão de riscos", "Muito alta"], ["LGPD aplicada a sistemas e dados informacionais", "Muito alta"]]}, {"group": "ESPECÍFICOS", "name": "Noções de Tecnologia e Inteligência Artificial Aplicadas à Informação", "priority": "Alta", "topics": [["Fundamentos de tecnologias aplicadas à informação", "Alta"], ["Inteligência Artificial: conceitos e aplicações", "Muito alta"], ["Classificação, agrupamento e recomendação de informações", "Muito alta"], ["Classificação automática de textos e documentos", "Muito alta"], ["Extração de palavras-chave e sumarização automática", "Alta"], ["OCR e HTR", "Muito alta"], ["Modelos de linguagem de grande porte – LLM", "Muito alta"], ["RAG: recuperação, contexto e fontes", "Muito alta"], ["Curadoria de datasets e corpora para IA", "Alta"], ["Avaliação de respostas: precisão, revocação e relevância", "Muito alta"], ["Alucinação, vieses algorítmicos e fundamentação", "Muito alta"], ["Human-in-the-loop, supervisão e ética no uso de IA", "Muito alta"], ["Proteção de dados e direitos autorais no emprego de IA", "Alta"]]}, {"group": "ESPECÍFICOS", "name": "Teoria Arquivística, Gestão Documental, Política Arquivística e Legislação Aplicada", "priority": "Muito alta", "topics": [["Arquivologia clássica, moderna e contemporânea", "Alta"], ["Princípios arquivísticos", "Muito alta"], ["Documento arquivístico e documento arquivístico digital", "Muito alta"], ["Características dos documentos de arquivo", "Muito alta"], ["Fundo, série, subsérie, dossiê e item documental", "Alta"], ["Ciclo vital e teoria das três idades", "Muito alta"], ["Records continuum", "Alta"], ["Valores documentais: primário e secundário", "Muito alta"], ["Gênero, espécie e tipo documental", "Muito alta"], ["Diplomática, tipologia documental e diplomática digital", "Muito alta"], ["Autenticidade e confiabilidade documental", "Muito alta"], ["Política e programa de gestão de documentos", "Muito alta"], ["Produção, captura, registro, tramitação e destinação", "Muito alta"], ["Diagnóstico arquivístico e análise funcional", "Alta"], ["Classificação, plano de classificação e código de classificação", "Muito alta"], ["Avaliação documental e tabela de temporalidade", "Muito alta"], ["Transferência, recolhimento e eliminação documental", "Muito alta"], ["Protocolo, recebimento, registro e distribuição", "Alta"], ["SIGAD e gestão arquivística de documentos digitais", "Muito alta"], ["E-ARQ Brasil e requisitos de sistemas informatizados", "Muito alta"], ["Legislação arquivística brasileira e Lei 8.159/1991", "Muito alta"], ["CONARQ, SINAR e política nacional de arquivos", "Alta"], ["Acesso, sigilo e restrição de documentos arquivísticos", "Muito alta"]]}, {"group": "ESPECÍFICOS", "name": "Tratamento, Preservação, Memória e Patrimônio Documental", "priority": "Muito alta", "topics": [["Arranjo e descrição arquivística", "Muito alta"], ["Descrição multinível e pontos de acesso", "Alta"], ["NOBRADE", "Muito alta"], ["ISAD(G), ISAAR(CPF), ISDF e ISDIAH", "Alta"], ["Records in Contexts – RiC, RiC-CM e RiC-O", "Alta"], ["EAD e intercâmbio de descrições arquivísticas", "Média"], ["Conservação preventiva e preservação de suportes analógicos", "Muito alta"], ["Agentes de deterioração e gestão de riscos", "Alta"], ["Digitalização e representantes digitais", "Muito alta"], ["Obsolescência tecnológica e formatos de preservação", "Muito alta"], ["Migração, normalização, emulação e encapsulamento", "Muito alta"], ["Fixidez, checksums e integridade digital", "Muito alta"], ["Modelo OAIS e PREMIS", "Muito alta"], ["Pacotes de informação e fluxos de preservação", "Alta"], ["RDC-Arq, Archivematica e AtoM", "Muito alta"], ["Preservação de websites, mídias sociais e documentos audiovisuais", "Alta"], ["Gestão de arquivos permanentes e patrimônio documental", "Alta"], ["Pesquisa histórica, fontes primárias e curadoria arquivística", "Alta"], ["Difusão cultural, exposições e memória institucional", "Alta"], ["História oral, acessibilidade e inclusão", "Média"]]}];
+const STORE='painel_camara_arquivologia_2026_v1';
+let done=new Set(JSON.parse(localStorage.getItem(STORE)||'[]'));
+let expanded=new Set(subjects.map(s=>s.name));
+const allTopics=()=>subjects.flatMap(s=>s.topics.map(t=>t[0]));
+function save(){localStorage.setItem(STORE,JSON.stringify([...done]));render()}
+function render(){
+ const all=allTopics(),n=all.length,c=all.filter(x=>done.has(x)).length,p=n?Math.round(c/n*100):0;
+ document.querySelector('#pct').textContent=p+'%';document.querySelector('#count').textContent=c;
+ document.querySelector('#remaining').textContent=n-c;document.querySelector('#bar').style.width=p+'%';
+ document.querySelector('#summary').textContent=`${c} de ${n} assuntos concluídos`;
+ const group=document.querySelector('#group').value,status=document.querySelector('#status').value,priority=document.querySelector('#priority').value,q=document.querySelector('#search').value.toLocaleLowerCase('pt-BR').trim();
+ const root=document.querySelector('#subjects');root.innerHTML='';
+ let visible=0;
+ subjects.forEach((s,idx)=>{
+  if(group!=='all'&&s.group!==group)return;
+  const matches=s.topics.filter(t=>(status==='all'||(status==='done'?done.has(t[0]):!done.has(t[0])))&&(priority==='all'||t[1]===priority)&&(!q||(t[0]+' '+s.name).toLocaleLowerCase('pt-BR').includes(q)));
+  if(!matches.length)return;visible++;
+  const finished=s.topics.filter(t=>done.has(t[0])).length;
+  const article=document.createElement('section');article.className='subject';
+  const head=document.createElement('div');head.className='subject-head';
+  const title=document.createElement('div');title.className='subject-title';
+  const chips=document.createElement('div');chips.className='chips';
+  const g=document.createElement('span');g.className='chip '+(s.group==='BÁSICOS'?'basic':'');g.textContent=s.group==='BÁSICOS'?'Básicos':'Específicos';chips.append(g);
+  const pr=document.createElement('span');pr.className='chip high';pr.textContent=s.priority;chips.append(pr);
+  const name=document.createElement('div');name.textContent=(idx+1)+'. '+s.name;
+  const meta=document.createElement('div');meta.className='meta';meta.textContent=`${finished}/${s.topics.length} concluídos`;
+  title.append(chips,name,meta);
+  const arrow=document.createElement('span');arrow.textContent=expanded.has(s.name)?'⌃':'⌄';arrow.setAttribute('aria-hidden','true');
+  head.append(title,arrow);head.addEventListener('click',()=>{expanded.has(s.name)?expanded.delete(s.name):expanded.add(s.name);render()});
+  const mini=document.createElement('div');mini.className='mini';const fill=document.createElement('div');fill.style.width=(finished/s.topics.length*100)+'%';mini.append(fill);
+  article.append(head,mini);
+  if(expanded.has(s.name)){
+   const list=document.createElement('div');list.className='topics';
+   matches.forEach(t=>{
+    const row=document.createElement('label');row.className='topic'+(done.has(t[0])?' done':'');
+    const cb=document.createElement('input');cb.type='checkbox';cb.checked=done.has(t[0]);cb.addEventListener('change',()=>{cb.checked?done.add(t[0]):done.delete(t[0]);save()});
+    const text=document.createElement('span');text.className='topic-name';text.textContent=t[0];
+    const badge=document.createElement('span');badge.className='priority '+(t[1]==='Muito alta'?'muito':t[1]==='Alta'?'alta':'');badge.textContent=t[1];
+    row.append(cb,text,badge);list.append(row);
+   });
+   article.append(list);
+  }
+  root.append(article);
+ });
+ if(!visible)root.innerHTML='<div class="panel empty">Nenhum assunto encontrado com esses filtros.</div>';
+ document.querySelector('#expand').textContent=expanded.size===subjects.length?'Recolher todas':'Expandir todas';
+}
+['group','status','priority','search'].forEach(id=>document.getElementById(id).addEventListener(id==='search'?'input':'change',render));
+document.querySelector('#expand').addEventListener('click',()=>{expanded=expanded.size===subjects.length?new Set():new Set(subjects.map(s=>s.name));render()});
+document.querySelector('#reset').addEventListener('click',()=>{if(confirm('Tem certeza de que deseja apagar todas as marcações deste navegador?')){done.clear();save()}});
+document.querySelector('#export').addEventListener('click',()=>{const blob=new Blob([JSON.stringify({version:1,done:[...done]},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='progresso-camara-arquivologia.json';a.click();URL.revokeObjectURL(a.href)});
+document.querySelector('#import').addEventListener('click',()=>document.querySelector('#file').click());
+document.querySelector('#file').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const data=JSON.parse(await f.text());if(!Array.isArray(data.done))throw Error();done=new Set(data.done.filter(x=>allTopics().includes(x)));save();alert('Progresso importado.')}catch{alert('Arquivo inválido ou incompatível.')}e.target.value=''});
+render();
+</script>
+</body></html>
